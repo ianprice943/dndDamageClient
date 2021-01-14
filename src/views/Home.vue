@@ -35,14 +35,20 @@ export default {
         method: "GET",
         header: { "Content-Type": "application/json" },
       }
-      const response = await fetch("http://localhost:7000/spells/" + this.spell, requestOptions);
-      this.apiResponse = await response.json();
+      let response;
+      if(this.spell !== '') {
+        response = await fetch("http://localhost:7000/spells/" + this.spell, requestOptions);
+        this.apiResponse = await response.json();
+      } else {
+        response = await fetch("http://localhost:7000/spells/", requestOptions);
+        this.apiResponse = await response.json();
+      }
     }
   }
 }
 </script>
 
-<style scoped>
+<style lang="postcss" scoped>
 #spell {
   border: 1px solid black;
   text-align: center;
@@ -51,5 +57,6 @@ export default {
   margin: 1vh 0 0;
   padding: 0 5px;
   border: 1px solid black;
+  cursor: pointer;
 }
 </style>
