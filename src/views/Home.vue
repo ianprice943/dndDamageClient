@@ -1,62 +1,34 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <div>
-      Search for a spell below to get started
-    </div>
-    <form @submit.prevent="getSpell" method="get">
-      <label for="spell">Spell </label>
-      <input type="text" id="spell" name="spell" v-model="spell"><br>
-      <input type="submit" id="submit" value="submit">
-    </form>
-    <div id="apiResponse">
-      {{ apiResponse }}
-    </div>
+   <img alt="Vue logo" src="../assets/logo.png">
+   <FindSpell v-bind:title=findSpellTitle @clicked="setReturnedSpells"/> 
+   {{ returnedSpells }}
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import FindSpell from "../components/FindSpell";
 
 export default {
   name: 'Home',
   components: {
-    
+    FindSpell
   },
   data() {
     return {
-      apiResponse: '',
-      spell: 'Eldritch Blast'
+      findSpellTitle: "Search for a spell below to get started",
+      returnedSpells: ''
     }
   },
   methods: {
-    getSpell: async function () {
-      const requestOptions = {
-        method: "GET",
-        header: { "Content-Type": "application/json" },
-      }
-      let response;
-      if(this.spell !== '') {
-        response = await fetch("http://localhost:7000/spells/" + this.spell, requestOptions);
-        this.apiResponse = await response.json();
-      } else {
-        response = await fetch("http://localhost:7000/spells/", requestOptions);
-        this.apiResponse = await response.json();
-      }
+    setReturnedSpells(value) {
+      this.returnedSpells = value;
     }
   }
 }
 </script>
 
 <style lang="postcss" scoped>
-#spell {
-  border: 1px solid black;
-  text-align: center;
-}
-#submit {
-  margin: 1vh 0 0;
-  padding: 0 5px;
-  border: 1px solid black;
-  cursor: pointer;
-}
+
 </style>

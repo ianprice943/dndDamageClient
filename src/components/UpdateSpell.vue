@@ -1,6 +1,7 @@
 <template>
   <div id="createContainer" class="container border-r-2 border-blue-700 text-left">
-    <h2 class="underline text-lg text-center">Create Spell</h2>
+    <h2 class="underline text-lg text-center">Update Spell</h2>
+    <FindSpell v-bind:title=findSpellTitle @clicked="setReturnedSpell"/>
     <p>* must be filled in</p>
     <p>on desktop hold CTRL or CMD to select multiple</p>
     <form @submit.prevent="validateSpell" class="flex flex-col">
@@ -237,20 +238,27 @@
       <label for="numTargets">Number of Targets (please separate groups by a '/', subproperties by a ',' and assign key value pairs with a ':'. ex: 1/5:2,11:3,17:4/)</label>
       <!--<textarea name="numTargets" rows="10" v-model="spellProperties.numTargets" placeholder="{&quot;baseTargets&quot;: &quot;3&quot;,...}"></textarea>-->
       <input type="text" name="numTargets" v-model="spellProperties.numTargets">
-      <input type="submit" id="submitNewSpell" value="Create">
+      <input type="submit" id="submitNewSpell" value="Update">
       {{ body }}
-      {{ apiResponse }}
+      {{ putApiResponse }}
     </form>
   </div>
 </template>
 
 <script>
+import FindSpell from "./FindSpell";
+
 export default {
-  name: 'CreateSpell',
+  name: 'UpdateSpell',
+  components: {
+    FindSpell
+  },
   data() {
     return {
-      apiResponse: '',
+      searchApiResponse: '',
+      putApiResponse:'',
       body: {},
+      findSpellTitle: "Search for a spell below to get started",
       spellProperties: {
         name: '',
         classes: [],
@@ -347,7 +355,9 @@ export default {
           }
         }
       }
-      this.postSpell(this.body);
+      if(confirm("Are you sure you want to update: " + data.name + "?")) {
+        this.putSpell(this.body);
+      }
     },
     isUnset: function (data) {
       if(data === '' || data.length === 0) {
@@ -356,10 +366,10 @@ export default {
         return false;
       }
     },
-    postSpell: async function (dataToSend) {
+    putSpell: async function (dataToSend) {
       const token = await this.$auth.getTokenSilently();
       const requestOptions = await {
-        method: "POST",
+        method: "PUT",
         headers: { 
           "Content-Type": "application/json",
           "authorization": "Bearer " + token 
@@ -369,7 +379,94 @@ export default {
       let response;
       response = await fetch("http://localhost:7000/spells", requestOptions);
       this.apiResponse = await response.json();
-    }
+    },
+    setReturnedSpell(value) {
+      if(value !== undefined &&
+        value !== null &&
+        value !== "" &&
+        value !== "404: No record found") {
+        this.searchApiResponse = value;
+        this.setFormValues();
+      }
+    },
+    setFormValues: function() {
+      let aoe = "";
+      let damageString = "";
+      let numTargetsString = "";
+      let damageTypeArr = [];
+      // convert areaOfEffect object into a string for the form if it's defined
+      if(this.searchApiResponse.areaOfEffect !== undefined) {
+        aoe += this.searchApiResponse.areaOfEffect.shape + ", " + this.searchApiResponse.areaOfEffect.size;
+      }
+      // convert damage object into a string for the form if it's defined
+      if(this.searchApiResponse.damage !== undefined) {
+        let damageObj = this.searchApiResponse.damage;
+        damageString += damageObj.baseDamage;
+        damageString += "/";
+        if(damageObj.damageAtHigherCharacterLevel !== undefined) {
+          let keys = Object.keys(damageObj.damageAtHigherCharacterLevel).sort(function(a, b) {
+            return a - b;
+          });
+          for(let i = 0; i < keys.length; i++) {
+            damageString += "" + keys[i] + ":" + damageObj.damageAtHigherCharacterLevel[keys[i]];
+            if(i !== keys.length - 1) {
+              damageString += ",";
+            }
+          }
+        }
+        damageString += "/";
+        if(damageObj.damageAtHigherSpellSlots !== undefined) {
+          let keys = Object.keys(damageObj.damageAtHigherSpellSlots).sort(function(a, b) {
+            return a - b;
+          });
+          for(let i = 0; i < keys.length; i++) {
+            damageString += "" + keys[i] + ":" + damageObj.damageAtHigherSpellSlots[keys[i]];
+            if(i !== keys.length - 1) {
+              damageString += ",";
+            }
+          }
+        }
+      }
+      // convert numTargets object into a string for the form if it's defined
+      if(this.searchApiResponse.numTargets !== undefined) {
+        let numTargetsObj = this.searchApiResponse.numTargets;
+        numTargetsString += numTargetsObj.baseTargets;
+        numTargetsString += "/";
+        if(numTargetsObj.targetsAtHigherCharacterLevel !== undefined) {
+          let keys = Object.keys(numTargetsObj.targetsAtHigherCharacterLevel).sort(function(a, b) {
+            return a - b;
+          });
+          for(let i = 0; i < keys.length; i++) {
+            numTargetsString += "" + keys[i] + ":" + numTargetsObj.targetsAtHigherCharacterLevel[keys[i]];
+            if(i !== keys.length - 1) {
+              numTargetsString += ",";
+            }
+          }
+        }
+        numTargetsString += "/";
+        if(numTargetsObj.targetsAtHigherSpellSlot !== undefined) {
+          let keys = Object.keys(numTargetsObj.targetsAtHigherSpellSlot).sort(function(a, b) {
+            return a - b;
+          });
+          for(let i = 0; i < keys.length; i++) {
+            numTargetsString += "" + keys[i] + ":" + numTargetsObj.targetsAtHigherSpellSlot[keys[i]];
+            if(i !== keys.length - 1) {
+              numTargetsString += ",";
+            }
+          }
+        }
+      }
+      if(this.searchApiResponse.damageType !== undefined) {
+        damageTypeArr = this.searchApiResponse.damageType;
+      }
+      this.spellProperties = {
+        ... this.searchApiResponse,
+        areaOfEffect: aoe,
+        damage: damageString,
+        numTargets: numTargetsString,
+        damageType: damageTypeArr
+      };
+    },
   }
 }
 </script>
