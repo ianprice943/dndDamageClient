@@ -1,7 +1,10 @@
 <template>
-  <div id="createContainer" class="container border-r-2 border-blue-700 text-left">
+  <div id="updateContainer" class="container border-r-2 border-blue-700 text-left">
     <h2 class="underline text-lg text-center">Update Spell</h2>
     <FindSpell v-bind:title=findSpellTitle @clicked="setReturnedSpell"/>
+    <div id="errorMessage" class="text-center">
+      {{ errorMessage }}
+    </div>
     <p>* must be filled in</p>
     <p>on desktop hold CTRL or CMD to select multiple</p>
     <form @submit.prevent="validateSpell" class="flex flex-col">
@@ -256,6 +259,7 @@ export default {
   data() {
     return {
       searchApiResponse: '',
+      errorMessage: '',
       putApiResponse:'',
       body: {},
       findSpellTitle: "Search for a spell below to get started",
@@ -377,16 +381,21 @@ export default {
         body: JSON.stringify(dataToSend)
       };
       let response;
-      response = await fetch("http://localhost:7000/spells", requestOptions);
-      this.apiResponse = await response.json();
+      response = await fetch("http://localhost:7000/api/spells", requestOptions);
+      this.putApiResponse = await response.json();
     },
     setReturnedSpell(value) {
       if(value !== undefined &&
         value !== null &&
         value !== "" &&
-        value !== "404: No record found") {
+        value !== "404: No record found" &&
+        value.id) {
         this.searchApiResponse = value;
         this.setFormValues();
+      } else if (!value.id && value === "404: No record found") {
+        this.errorMessage = value;
+      } else if (!value.id) {
+        this.errorMessage = "Please search for an individual spell";
       }
     },
     setFormValues: function() {

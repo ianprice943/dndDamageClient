@@ -8,9 +8,6 @@
       <input type="text" id="spell" name="spell" v-model="spell"><br>
       <input type="submit" id="submit" value="submit">
     </form>
-    <div id="apiResponse">
-      {{ apiResponse }}
-    </div>
   </div>
 </template>
 
@@ -33,7 +30,7 @@ export default {
       };
       let response;
       if(this.spell !== '') {
-        response = await fetch("http://localhost:7000/spells/" + this.spell, requestOptions);
+        response = await fetch("http://localhost:7000/api/spells/" + this.spell, requestOptions);
 
         if(!response.ok) {
           const message = `${response.status}: ` + await response.text();
@@ -42,7 +39,7 @@ export default {
           this.apiResponse = await response.json();
         }
       } else {
-        response = await fetch("http://localhost:7000/spells/", requestOptions);
+        response = await fetch("http://localhost:7000/api/spells/", requestOptions);
         this.apiResponse = await response.json();
       }
       this.$emit('clicked', this.apiResponse);

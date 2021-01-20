@@ -367,7 +367,7 @@ export default {
         body: JSON.stringify(dataToSend)
       };
       let response;
-      response = await fetch("http://localhost:7000/spells", requestOptions);
+      response = await fetch("http://localhost:7000/api/spells", requestOptions);
       this.apiResponse = await response.json();
     }
   }

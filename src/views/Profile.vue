@@ -12,12 +12,7 @@
     <div id="adminControls" v-if="checkAdmin" class="container mx-auto border-2 border-blue-700 flex flex-col md:flex-row">
       <CreateSpell />
       <UpdateSpell />
-      <div id="deleteContainer" class="container">
-        <h2 class="underline text-lg text-center">Delete Spell</h2>
-        <form @submit.prevent="">
-
-        </form>
-      </div>
+      <DeleteSpell />
     </div>
   </div>
 </template>
@@ -25,12 +20,14 @@
 <script>
 import CreateSpell from "../components/CreateSpell";
 import UpdateSpell from "../components/UpdateSpell";
+import DeleteSpell from "../components/DeleteSpell";
 
 export default {
   name: "Profile",
   components: {
     CreateSpell,
-    UpdateSpell
+    UpdateSpell,
+    DeleteSpell
   },
   data() {
     return {
