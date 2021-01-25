@@ -391,6 +391,7 @@ export default {
         value !== "404: No record found" &&
         value.id) {
         this.searchApiResponse = value;
+        this.errorMessage = "";
         this.setFormValues();
       } else if (!value.id && value === "404: No record found") {
         this.errorMessage = value;
