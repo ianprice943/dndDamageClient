@@ -6,21 +6,26 @@
       {{ errorMessage }}
     </div>
     <!--Spell Card Component?-->
-    <button id="deleteSpellBtn" class="text-center rounded-sm border-red-700 bg-red-700">Delete Spell?</button>
+    <SpellCard v-bind:passedSpell=searchApiResponse />
+    <div class="text-center my-4">
+      <button id="deleteSpellBtn" class="text-center rounded-sm border-red-700 bg-red-700">Delete Spell?</button>
+    </div>
   </div>
 </template>
 
 <script>
 import FindSpell from "./FindSpell";
+import SpellCard from "./SpellCard";
 
 export default {
-  name: 'UpdateSpell',
+  name: 'DeleteSpell',
   components: {
-    FindSpell
+    FindSpell,
+    SpellCard
   },
   data() {
     return {
-      searchApiResponse: '',
+      searchApiResponse: {},
       errorMessage: '',
       delApiResponse:'',
       body: {},
@@ -82,6 +87,6 @@ export default {
 <style lang="postcss" scoped>
 #deleteSpellBtn {
   color: #000;
-
+  padding: 3px 6px;
 }
 </style>
