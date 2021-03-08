@@ -81,7 +81,7 @@ export default {
           },
         };
         let response;
-        response = await fetch("http://localhost:7000/api/spells/" + this.searchApiResponse.name, requestOptions);
+        response = await fetch("http://localhost:7000/api/v1/spells/" + this.searchApiResponse.name, requestOptions);
         this.delApiResponse = await response.json();
         this.searchApiResponse = {};
       }

@@ -30,7 +30,7 @@ export default {
       };
       let response;
       if(this.spell !== '') {
-        response = await fetch("http://localhost:7000/api/spells/" + this.spell, requestOptions);
+        response = await fetch("http://localhost:7000/api/v1/spells/" + this.spell, requestOptions);
 
         if(!response.ok) {
           const message = `${response.status}: ` + await response.text();
@@ -39,7 +39,7 @@ export default {
           this.apiResponse = await response.json();
         }
       } else {
-        response = await fetch("http://localhost:7000/api/spells/", requestOptions);
+        response = await fetch("http://localhost:7000/api/v1/spells/", requestOptions);
         this.apiResponse = await response.json();
       }
       this.$emit('clicked', this.apiResponse);
