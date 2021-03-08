@@ -5,11 +5,11 @@
     <div id="errorMessage" class="text-center">
       {{ errorMessage }}
     </div>
-    <!--Spell Card Component?-->
     <SpellCard v-bind:passedSpell=searchApiResponse />
     <div class="text-center my-4">
-      <button id="deleteSpellBtn" class="text-center rounded-sm border-red-700 bg-red-700">Delete Spell?</button>
+      <button id="deleteSpellBtn" class="text-center rounded-md border-red-700 bg-red-700" v-on:click="deleteSpell">Delete Spell?</button>
     </div>
+    {{ delApiResponse }}
   </div>
 </template>
 
@@ -67,19 +67,25 @@ export default {
       }
     },
     deleteSpell: async function () {
-      const token = await this.$auth.getTokenSilently();
-      const requestOptions = await {
-        method: "DELETE",
-        headers: { 
-          "Content-Type": "application/json",
-          "authorization": "Bearer " + token 
-        },
-      };
-      let response;
-      response = await fetch("http://localhost:7000/api/spells/" + this.spellProperties.name, requestOptions);
-      this.delApiResponse = await response.json();
+      if(this.searchApiResponse.name === undefined) {
+        alert("No spell to delete");
+        return;
+      }
+      if(confirm("Are you sure you want to delete: " + this.searchApiResponse.name + "?")) {
+        const token = await this.$auth.getTokenSilently();
+        const requestOptions = await {
+          method: "DELETE",
+          headers: { 
+            "Content-Type": "application/json",
+            "authorization": "Bearer " + token 
+          },
+        };
+        let response;
+        response = await fetch("http://localhost:7000/api/spells/" + this.searchApiResponse.name, requestOptions);
+        this.delApiResponse = await response.json();
+        this.searchApiResponse = {};
+      }
     },
-
   }
 }
 </script>

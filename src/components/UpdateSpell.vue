@@ -400,6 +400,7 @@ export default {
       }
     },
     setFormValues: function() {
+      let subClasses = [];
       let aoe = "";
       let damageString = "";
       let numTargetsString = "";
@@ -471,6 +472,7 @@ export default {
       }
       this.spellProperties = {
         ... this.searchApiResponse,
+        subClasses: subClasses,
         areaOfEffect: aoe,
         damage: damageString,
         numTargets: numTargetsString,

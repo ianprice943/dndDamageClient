@@ -1,5 +1,5 @@
 <template>
-  <div v-if="spellProperties.name !== ''" class="spellCard text-left">
+  <div v-if="spellProperties.name !== ''" class="spellCard text-left" ref="card">
     <h2 class="font-bold">{{ spellProperties.name }}</h2>
     <p class="italic">{{ spellProperties.school }} {{ spellProperties.level }}</p>
     <p><span class="font-bold">Casting Time: </span>{{ spellProperties.castingTime }}</p>
@@ -45,10 +45,33 @@ export default {
   methods: {
     setSpellProperties: function() {
       console.log(this.passedSpell);
-      if(this.passedSpell !== {}) {
+      if(this.passedSpell.name !== undefined) {
         this.spellProperties = {
           ... this.passedSpell
         }
+      } else {
+        this.resetComponent();
+      }
+    },
+    resetComponent: function() {
+      this.spellProperties = {
+        name: '',
+        classes: [],
+        subClasses: [],
+        level: '',
+        school: '',
+        castingTime: '',
+        range: '',
+        areaOfEffect: '',
+        ritual: '',
+        concentration: '',
+        components: [],
+        materials: '',
+        duration: '',
+        description: '',
+        damage: '',
+        damageType: [],
+        numTargets: '',
       }
     }
   },
@@ -66,6 +89,9 @@ export default {
   border: 1px solid #000;
   bordeer-radius: 5px;
   box-shadow: 2px 3px;
+}
+.hideSpellCard {
+  display: none;
 }
 h2 {
   color: #800000;
