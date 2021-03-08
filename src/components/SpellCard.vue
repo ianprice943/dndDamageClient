@@ -7,6 +7,7 @@
     <p><span class="font-bold">Components: </span><span v-for="component in spellProperties.components" :key="component">{{ component }} </span> <span v-if="spellProperties.materials">({{ spellProperties.materials }})</span></p>
     <p class="capitalize"><span class="font-bold">Duration: </span>{{ spellProperties.duration }}</p>
     <p class="my-4 whitespace-pre-line">{{ spellProperties.description }}</p>
+    <!-- Still need class and sub class list -->
     <br>
     <br>
     {{ spellProperties }}
